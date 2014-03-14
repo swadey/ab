@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>AB: An Audiobrowser</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="css/ladda-themeless.min.css" rel="stylesheet" media="screen">
+  </head>
+  <body>
+    <script src="js/jquery-2.1.0.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/wavesurfer.min.js"></script>
+    <script src="js/waveform.js"></script>
+    <script src="js/spin.min.js"></script>
+    <script src="js/ladda.min.js"></script>
+    <script src="js/ab-support.js"></script>
+
+    <!-- Paginator -->
+    <ul class="pagination pagination-sm">
+      <li class="disabled"><a href="#">&laquo;</a></li>
+      <li class="active"><a href="#">1</a></li>
+      <li class="disabled"><a href="#">&raquo;</a></li>
+    </ul>
+
+    <!-- Viewer -->
+    <div class="panel panel-default" width="80%">
+      <div class="panel-heading">
+        <h3 class="panel-title">Wave viewer</h3>
+      </div>
+
+      <div class="panel-body">
+        <div class="progress progress-striped active" id="viewer-progress-bar">
+          <div class="progress-bar progress-bar-info"></div>
+        </div>
+        
+        <div id="viewer">
+          <!-- Here be the waveform -->
+        </div>
+      </div>
+
+      <!-- Playback controls -->
+      <div class="controls">
+        <button class="btn btn-primary" data-action="back">
+          <i class="glyphicon glyphicon-step-backward"></i>
+          Backward
+        </button>
+        
+        <button class="btn btn-primary" data-action="play">
+          <i class="glyphicon glyphicon-play"></i>
+          Play
+          /
+          <i class="glyphicon glyphicon-pause"></i>
+          Pause
+        </button>
+        
+        <button class="btn btn-primary" data-action="forth">
+          <i class="glyphicon glyphicon-step-forward"></i>
+          Forward
+        </button>
+        
+        <button class="btn btn-primary" data-action="toggle-mute">
+          <i class="glyphicon glyphicon-volume-off"></i>
+          Toggle Mute
+        </button>
+        
+        <button class="btn btn-success" data-action="green-mark">
+          <i class="glyphicon glyphicon-flag"></i>
+          Set green mark
+        </button>
+          
+        <button class="btn btn-danger" data-action="red-mark">
+          <i class="glyphicon glyphicon-flag"></i>
+          Set red mark
+        </button>
+      </div>
+      
+      </div>
+    </div>
+
+    <!-- List of files -->
+    {{#files}}
+    <div class="panel panel-default" width="80%">
+      <div class="panel-heading">
+        <h3 class="panel-title">{{{name}}}</h3>
+      </div>
+      <div class="panel-body" id='{{id}}' onclick="load('{{{name}}}', '#{{id}}', '#viewer')">
+        <button class="btn btn-primary ladda-button" data-style="expand-left" data-size="l" id='{{id}}-progress'>
+          <span class="ladda-label">Generating waveform</span>
+        </button>
+        <div id='{{id}}-waveform'></div>
+        <script>getWaveform('/waveform/{{{name}}}', '{{id}}')</script>
+      </div>
+    </div>
+    {{/files}}
+    
+    <script>
+    </script>
+  </body>
+</html>
