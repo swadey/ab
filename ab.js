@@ -49,6 +49,9 @@ function waveimage(fn, cb) {
     waveform.audio_data(fn, function(err, fmt) { 
       waveform.generate_peaks(fn, 2048, fmt.duration, fmt.sample_rate, fmt.channels, 
                               function (eff, peaks) { 
+                                for (k in fmt)
+                                  if (fmt.hasOwnProperty(k)) 
+                                    peaks[k] = fmt[k];
                                 fs.writeFileSync(peakFile, JSON.stringify(peaks), 'utf8');
                                 cb(peaks);
                               });
@@ -79,7 +82,7 @@ app.use("/fonts", express.static(__dirname + '/fonts'))
 
 app.get("/:file", vid);
 app.get('/waveform/:file', function(req, res) {
-  waveimage(req.params.file, function(pks) { res.json(pks.peaks) });
+  waveimage(req.params.file, function(pks) { res.json(pks) });
 });
 app.get('/', function(req, res) {
   var files = fs.readdirSync(".").filter(function(f) { return !fs.lstatSync(f).isDirectory() && /^.*\.(mp3|mp4|m4a|wav|ogg|avi|wma)$/.test(f) });

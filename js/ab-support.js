@@ -1,14 +1,17 @@
 function load(path, caller, container) {
   var wavesurfer = Object.create(WaveSurfer);
   
-  $(container).empty();
+  //$(container).empty();
 
-  /* Progress bar */
+  // Progress bar and controls 
   var progressDiv = document.querySelector('#viewer-progress-bar');
   var progressBar = progressDiv.querySelector('.progress-bar');
+  var controls    = document.querySelector('#controls');
+
   wavesurfer.on('loading', function (percent, xhr) {
     progressDiv.style.display = 'block';
-    console.log("percent: " + percent);
+    controls.style.display = "block";
+    progressBar.text = percent + "%";
     progressBar.style.width = percent + '%';
   });
   wavesurfer.on('ready', function () {
@@ -17,6 +20,7 @@ function load(path, caller, container) {
   });
   wavesurfer.on('destroy', function () {
     progressDiv.style.display = 'none';
+    controls.style.display = "none";
   });
   
   wavesurfer.init({
@@ -25,7 +29,7 @@ function load(path, caller, container) {
     cursorColor: 'navy',
     markerWidth: 2,
     scrollParent: true,
-    minPxPerSec: 30,
+    minPxPerSec: 15,
     // normalize: true,
     waveColor: 'violet',
     progressColor: 'purple'
@@ -110,6 +114,18 @@ function load(path, caller, container) {
   }());
 }
 
+function format_time(duration) {
+  var hours = Math.floor(duration / 3600.0);
+  var mins  = Math.floor((duration - hours * 3600.0) / 60.0);
+  var secs  = (duration - hours * 3600.0 - mins * 60.0);
+  // var parts = [];
+  // if (hours !== 0) parts.push(hours + " hours");
+  // if (mins !== 0) parts.push(mins + " mins");
+  // parts.push(secs.toFixed(3) + " secs");
+  // return parts.join(", ");
+  return hours + ":" + (mins >= 10 ? mins : "0" + mins) + ":" + (secs < 10 ? "0" + secs.toFixed(3) : secs.toFixed(3));
+}
+
 function getWaveform(url, container) {
   var ll = Ladda.create(document.querySelector('#' + container + "-progress"));
   ll.start();
@@ -118,12 +134,18 @@ function getWaveform(url, container) {
     cache: true,
     dataType: "json",
     url: url,
-    success: function (s) {
+    success: function (info) {
       var waveform = new Waveform({ container: document.getElementById(container + "-waveform"),
-                                    width: 1024,
-                                    height: 75,
-                                    data: s });
+                                    width: $('#' + container + '-waveform').width(),
+                                    height: 30,
+                                    interpolate: true,
+                                    innerColor: "6f6f6f",
+                                    outerColor: "ffffff",
+                                    data: info.peaks });
       ll.stop();
+      $('#' + container + '-title').append('<span class="label label-danger  pull-right">' + " duration: " + format_time(info.duration) + "</span>");
+      $('#' + container + '-title').append('<span class="label label-default pull-right">' + " sample rate: " + info.sample_rate + " khz</span>");
+      $('#' + container + '-title').append('<span class="label label-primary pull-right">' + (info.channels === 2 ? "stereo" : "mono") + "</span>");
       $('#' + container + '-progress').remove();
     }
   });
