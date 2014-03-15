@@ -1,0 +1,15 @@
+{
+  "name": "ab",
+  "description": "Audiobrowser",
+  "author": "Wade Shen <swade@ll.mit.edu>",
+  "dependencies": {
+    "express": ">= 3.5.0",
+    "xregexp": ">= 2.0.0",
+    "consolidate": ">= 0.10.0",
+    "vid-streamer": ">= 0.1.4",
+    "waveform-util": ">= 0.0.1",
+    "fluent-ffmpeg": ">= 1.6.0",
+    "memorystream": ">= 0.2.0",
+  },
+  "engine": "node 0.10.26"
+}
