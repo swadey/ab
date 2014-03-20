@@ -1,6 +1,10 @@
 Node-based audio browser
 ========================
 
+AB is a small audio file browser built for the DARPA XDATA program as
+a small standalone utility and as an example node application that
+will eventually demonstrate thunderdome/MCP FFI capabilities.
+
 
 Requires:
 - Node.js

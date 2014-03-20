@@ -76,12 +76,6 @@ function waveimage(fn, cb) {
 // ---------------------------------------------------------------------------------------------------------------------------------
 // Main
 // ---------------------------------------------------------------------------------------------------------------------------------
-var s = {
-  rootFolder: __dirname + "/",
-  rootPath: ""
-};
-var v = vid.settings(s);
-
 app.use(express.logger())
 app.use(express.compress());
 
@@ -89,12 +83,29 @@ app.engine('html', cons.handlebars);
 app.set('view engine', 'html');
 app.set('views', __dirname);
 
+app.use("/directory/:dir", function(req, res) {
+  var s = {
+    rootFolder: req.params.dir,
+    rootPath: ""
+  };
+  vid.settings(s);
+  app.use("/:file", vid);
+});
 app.use("/css", express.static(__dirname + '/css'))
 app.use("/js", express.static(__dirname + '/js'))
 app.use("/img", express.static(__dirname + '/img'))
 app.use("/fonts", express.static(__dirname + '/fonts'))
 
+// Normal video file service
+/* 
+var s = {
+  rootFolder: __dirname + "/",
+  rootPath: ""
+};
+var v = vid.settings(s);
 app.get("/:file", vid);
+*/
+
 app.get('/waveform/:file', function(req, res) {
   waveimage(req.params.file, function(pks) { res.json(pks) });
 });
